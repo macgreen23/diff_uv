@@ -86,6 +86,19 @@ class Controller():
 
         return pid_controller, i_buffer
     
+    def position_pid_no_grav(self):
+        ne = nd - n
+
+        eul_d = nd[3:6]
+        J_d, _, _ = T_eul.J_kin(eul_d)
+        
+        i_buffer = sum_e_buffer + ne*dt
+
+        pid = diag(Kp)@ne + diag(Ki)@i_buffer + diag(Kd)@(J_d@xb_d - self.J_@x_nb)
+
+        pid_controller = self.J_.T@pid
+
+        return pid_controller, i_buffer
     
     def trajectorytracking_pid(self):
         #trajectorytracking using inverse dynamics computed torque
